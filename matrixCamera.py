@@ -6,9 +6,16 @@ import string
 
 
 cap = cv.VideoCapture(0)
+cap.set(3, 640)
+cap.set(4, 360)
 width = int(cap.get(3))
 height = int(cap.get(4))
 
+screenHeight = 1080
+screenWidth = 1920
+
+heightRatio = screenHeight / height
+widthRatio = screenWidth / width
 
 Symbols = string.ascii_letters + string.digits + string.punctuation*10 + 100*' '
 fontScale = 0.25
@@ -44,29 +51,30 @@ while (True):
     cv.imshow('frame',frame)
 
     th, frameBw = cv.threshold(frame, 0, 200, cv.THRESH_OTSU)
+    # frameBw = 200 - frameBw
     cv.imshow('frameBw',frameBw)
 
     frameEdges = cv.Canny(frameBw, th, 2*th)
     cv.imshow('frameEdges',frameEdges)
 
-    frameMatrix = np.zeros((height,width,3), np.uint8)
+    frameMatrix = np.zeros((screenHeight,screenWidth,3), np.uint8)
     
 
     widthCovered = 0
     heightCovered = 0
 
     lineIndex = 0
-    while heightCovered < height:
+    while heightCovered < screenHeight:
         colIndex = 0
-        while widthCovered < width:
+        while widthCovered < screenWidth:
             matrixChar = matrixLines[maxNbrLines -1 - lineIndex][colIndex]
             ((textW, textH), baseline) = cv.getTextSize(matrixChar, cv.FONT_HERSHEY_SIMPLEX, fontScale, fontThickness)
             maxSymbolWidth = textW if (textW > maxSymbolWidth) else maxSymbolWidth
 
             if (random.random() < 0.8):
-                if (frameBw[heightCovered:heightCovered+textH,widthCovered:widthCovered+maxSymbolWidth].mean() > 0.7):
+                if (frameBw[int(heightCovered/heightRatio):int((heightCovered+textH)/heightRatio),int(widthCovered/widthRatio):int((widthCovered+maxSymbolWidth)/widthRatio)].mean() > 0.7 or random.random() < 0.05):
                     cv.putText(frameMatrix, matrixChar, (widthCovered+int((maxSymbolWidth-textW)/2),heightCovered + textH), cv.FONT_HERSHEY_SIMPLEX, fontScale, (0, 255, 0), fontThickness)
-                if (frameEdges[heightCovered:heightCovered+textH,widthCovered:widthCovered+textW].mean() > 0.3):
+                if (frameEdges[int(heightCovered/heightRatio):int((heightCovered+textH)/heightRatio),int(widthCovered/widthRatio):int((widthCovered+textW)/widthRatio)].mean() > 0.3):
                     cv.putText(frameMatrix, matrixChar, (widthCovered,heightCovered + textH), cv.FONT_HERSHEY_SIMPLEX, fontScale, (180, 255, 180), fontThickness)
             widthCovered += maxSymbolWidth + ColPadding
             colIndex += 1
