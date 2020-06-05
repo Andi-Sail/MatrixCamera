@@ -74,8 +74,8 @@ while (True):
             if (random.random() < 0.8):
                 if (frameBw[int(heightCovered/heightRatio):int((heightCovered+textH)/heightRatio),int(widthCovered/widthRatio):int((widthCovered+maxSymbolWidth)/widthRatio)].mean() > 0.7 or random.random() < 0.05):
                     cv.putText(frameMatrix, matrixChar, (widthCovered+int((maxSymbolWidth-textW)/2),heightCovered + textH), cv.FONT_HERSHEY_SIMPLEX, fontScale, (0, 255, 0), fontThickness)
-                if (frameEdges[int(heightCovered/heightRatio):int((heightCovered+textH)/heightRatio),int(widthCovered/widthRatio):int((widthCovered+textW)/widthRatio)].mean() > 0.3):
-                    cv.putText(frameMatrix, matrixChar, (widthCovered,heightCovered + textH), cv.FONT_HERSHEY_SIMPLEX, fontScale, (180, 255, 180), fontThickness)
+                if (frameEdges[int(heightCovered/heightRatio):int((heightCovered+textH)/heightRatio),int(widthCovered/widthRatio):int((widthCovered+textW)/widthRatio)].mean() > 0.15):
+                    cv.putText(frameMatrix, matrixChar, (widthCovered,heightCovered + textH), cv.FONT_HERSHEY_SIMPLEX, fontScale, (200, 255, 200), fontThickness)
             widthCovered += maxSymbolWidth + ColPadding
             colIndex += 1
 
